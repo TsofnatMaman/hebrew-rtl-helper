@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Hebrew RTL Helper",
+  "version": "1.0.0",
+  "description": "Automatically improves Hebrew RTL text direction and typography on web pages.",
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "Toggle Hebrew RTL Helper"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}

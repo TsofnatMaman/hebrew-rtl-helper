@@ -1,0 +1,88 @@
+[data-hebrew-rtl-fixed="true"] {
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: isolate;
+  line-height: 1.75 !important;
+  overflow-wrap: break-word;
+}
+
+[data-hebrew-rtl-fixed="true"] ul,
+[data-hebrew-rtl-fixed="true"] ol {
+  padding-right: 1.5em !important;
+  padding-left: 0 !important;
+  margin-block: 0.5em 0.85em !important;
+}
+
+[data-hebrew-rtl-fixed="true"] p,
+[data-hebrew-rtl-fixed="true"] li,
+[data-hebrew-rtl-fixed="true"] blockquote {
+  line-height: 1.75 !important;
+}
+
+[data-hebrew-rtl-fixed="true"] li {
+  margin-block: 0.35em !important;
+}
+
+[data-hebrew-rtl-fixed="true"] pre,
+[data-hebrew-rtl-fixed="true"] pre code {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+}
+
+[data-hebrew-rtl-fixed="true"] code:not(pre code),
+[data-hebrew-rtl-fixed="true"] kbd:not(pre kbd),
+[data-hebrew-rtl-fixed="true"] samp:not(pre samp) {
+  direction: ltr !important;
+  display: inline;
+  unicode-bidi: isolate-override !important;
+  text-align: left !important;
+  vertical-align: baseline;
+  margin-inline: 0.2em;
+  padding: 0.08em 0.38em;
+  white-space: nowrap;
+}
+
+[data-hebrew-rtl-lrm-marker="true"] {
+  display: inline !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+aside [data-hebrew-rtl-fixed="true"],
+nav [data-hebrew-rtl-fixed="true"],
+[role="navigation"] [data-hebrew-rtl-fixed="true"] {
+  direction: inherit !important;
+  text-align: inherit !important;
+  unicode-bidi: normal !important;
+}
+
+/* Improve Hebrew typography on fixed content without touching code blocks. */
+[data-hebrew-rtl-fixed="true"],
+[data-hebrew-rtl-fixed="true"] *:not(pre):not(code):not(kbd):not(samp) {
+  font-family:
+    "Rubik",
+    "Heebo",
+    Arial,
+    "Noto Sans Hebrew",
+    "Segoe UI",
+    system-ui,
+    sans-serif !important;
+
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
+}
+
+html[data-hebrew-rtl-helper-enabled="true"] textarea,
+html[data-hebrew-rtl-helper-enabled="true"] [contenteditable="true"] {
+  font-family:
+    "Rubik",
+    "Heebo",
+    Arial,
+    "Noto Sans Hebrew",
+    "Segoe UI",
+    system-ui,
+    sans-serif !important;
+}
