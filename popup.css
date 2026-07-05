@@ -166,4 +166,22 @@ input[type="checkbox"]:checked::before {
   margin: 8px 0 0;
   text-align: center;
 }
+.credit {
+  color: #748092;
+  direction: ltr;
+  font-size: 9px;
+  line-height: 1.25;
+  margin: 5px 0 0;
+  text-align: center;
+}
+
+.credit a {
+  color: #f06aa0;
+  text-decoration: none;
+}
+
+.credit a:hover {
+  color: #ff82b2;
+  text-decoration: underline;
+}
 
