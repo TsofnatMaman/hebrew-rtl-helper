@@ -4,6 +4,8 @@
 
 # Hebrew RTL Helper
 
+[עברית](README.he.md)
+
 A small Chrome extension that improves Hebrew right-to-left rendering on web pages.
 
 The extension detects Hebrew text in common content elements, applies RTL direction when enabled, and can improve Hebrew typography, spacing, and mixed Hebrew-English/code readability.
@@ -30,7 +32,7 @@ All options are enabled by default:
 - Font override
 - Spacing/readability
 
-Use **Apply to this page** from the popup when a page changes after load, for example after another translation extension rewrites the page.
+Tip: after translating a page with Google Translate, click **Apply to this page** again.
 
 ## Install locally
 
@@ -38,14 +40,6 @@ Use **Apply to this page** from the popup when a page changes after load, for ex
 2. Enable Developer mode.
 3. Click **Load unpacked**.
 4. Select this project folder.
-
-## Build a release package
-
-Create a ZIP that contains the extension files at the archive root:
-
-```powershell
-Compress-Archive -Path .\manifest.json, .\background.js, .\content.js, .\style.css, .\popup.html, .\popup.css, .\popup.js, .\icons -DestinationPath .\hebrew-rtl-helper-1.0.0.zip -Force
-```
 
 ## Testing
 
