@@ -1,7 +1,16 @@
-(() => {
-  const STORAGE_KEY = "hebrewRtlHelperEnabled";
+﻿(() => {
+  const SETTINGS_KEY = "hebrewRtlHelperSettings";
+  const LEGACY_ENABLED_KEY = "hebrewRtlHelperEnabled";
   const HEBREW_RE = /[\u0590-\u05FF]/;
   const LRM = "\u200e";
+
+  const DEFAULT_SETTINGS = {
+    enabled: true,
+    direction: true,
+    markdown: true,
+    font: true,
+    spacing: true
+  };
 
   const TARGET_SELECTOR = [
     "article",
@@ -41,6 +50,41 @@
     "noscript",
     "svg"
   ].join(",");
+
+  let settings = { ...DEFAULT_SETTINGS };
+
+  function normalizeSettings(nextSettings = {}) {
+    return {
+      ...DEFAULT_SETTINGS,
+      ...nextSettings
+    };
+  }
+
+  function hasEnabledFeature() {
+    return settings.direction || settings.markdown || settings.font || settings.spacing;
+  }
+
+  function shouldRun() {
+    return settings.enabled && hasEnabledFeature();
+  }
+
+  function setRootFlag(name, value) {
+    const attributeName = `data-hebrew-rtl-helper-${name}`;
+
+    if (value) {
+      document.documentElement.setAttribute(attributeName, "true");
+    } else {
+      document.documentElement.removeAttribute(attributeName);
+    }
+  }
+
+  function applyRootSettings() {
+    setRootFlag("enabled", settings.enabled);
+    setRootFlag("direction", settings.enabled && settings.direction);
+    setRootFlag("markdown", settings.enabled && settings.markdown);
+    setRootFlag("font", settings.enabled && settings.font);
+    setRootFlag("spacing", settings.enabled && settings.spacing);
+  }
 
   function isIgnored(element) {
     return Boolean(element?.closest?.(IGNORE_SELECTOR));
@@ -92,7 +136,7 @@
     }
   }
 
-  function restoreOriginalAttributes(element) {
+  function restoreDirectionAttributes(element) {
     const originalDir = element.dataset.hebrewRtlOriginalDir;
     const originalLang = element.dataset.hebrewRtlOriginalLang;
 
@@ -107,7 +151,15 @@
     } else {
       element.removeAttribute("lang");
     }
+  }
 
+  function clearElementFix(element) {
+    if (
+      element.dataset.hebrewRtlOriginalDir !== undefined ||
+      element.dataset.hebrewRtlOriginalLang !== undefined
+    ) {
+      restoreDirectionAttributes(element);
+    }
     delete element.dataset.hebrewRtlFixed;
     delete element.dataset.hebrewRtlOriginalDir;
     delete element.dataset.hebrewRtlOriginalLang;
@@ -180,18 +232,24 @@
   }
 
   function fixElement(element) {
-    if (!shouldFixElement(element)) {
+    if (!shouldRun() || !shouldFixElement(element)) {
       if (element?.dataset?.hebrewRtlFixed === "true") {
-        restoreOriginalAttributes(element);
+        clearElementFix(element);
       }
       return;
     }
 
-    saveOriginalAttributes(element);
-    element.setAttribute("dir", "rtl");
-    element.setAttribute("lang", "he");
     element.dataset.hebrewRtlFixed = "true";
-    fixInlineCode(element);
+
+    if (settings.direction) {
+      saveOriginalAttributes(element);
+      element.setAttribute("dir", "rtl");
+      element.setAttribute("lang", "he");
+    }
+
+    if (settings.markdown) {
+      fixInlineCode(element);
+    }
   }
 
   function getElementRoot(node) {
@@ -226,10 +284,11 @@
   }
 
   const pendingRoots = new Set();
-  let enabled = true;
   let scheduled = false;
 
   function scheduleScan(root = document.body) {
+    if (!shouldRun()) return;
+
     if (root) {
       pendingRoots.add(root);
     }
@@ -262,36 +321,40 @@
 
     const elements = document.querySelectorAll("[data-hebrew-rtl-fixed='true']");
     for (const element of elements) {
-      restoreOriginalAttributes(element);
+      clearElementFix(element);
     }
   }
 
-  function setEnabled(nextEnabled) {
-    enabled = nextEnabled;
-
-    if (enabled) {
-      document.documentElement.dataset.hebrewRtlHelperEnabled = "true";
-      scheduleScan(document.body);
-      return;
-    }
-
-    delete document.documentElement.dataset.hebrewRtlHelperEnabled;
+  function applySettings(nextSettings) {
+    settings = normalizeSettings(nextSettings);
+    applyRootSettings();
     pendingRoots.clear();
     restoreFixedElements();
+
+    if (shouldRun()) {
+      scheduleScan(document.body);
+    }
   }
 
-  function loadEnabledState() {
-    chrome.storage.local.get({ [STORAGE_KEY]: true }, (result) => {
-      setEnabled(Boolean(result[STORAGE_KEY]));
+  function loadSettings() {
+    chrome.storage.local.get([SETTINGS_KEY, LEGACY_ENABLED_KEY], (result) => {
+      const storedSettings = result[SETTINGS_KEY];
+      const nextSettings = normalizeSettings(storedSettings);
+
+      if (storedSettings === undefined && result[LEGACY_ENABLED_KEY] !== undefined) {
+        nextSettings.enabled = Boolean(result[LEGACY_ENABLED_KEY]);
+      }
+
+      applySettings(nextSettings);
     });
   }
 
   if (!document.body) return;
 
-  loadEnabledState();
+  loadSettings();
 
   const observer = new MutationObserver((mutations) => {
-    if (!enabled) return;
+    if (!shouldRun()) return;
 
     for (const mutation of mutations) {
       if (mutation.type === "characterData") {
@@ -312,8 +375,28 @@
   });
 
   chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName !== "local" || !changes[STORAGE_KEY]) return;
+    if (areaName !== "local") return;
 
-    setEnabled(Boolean(changes[STORAGE_KEY].newValue));
+    if (changes[SETTINGS_KEY]) {
+      applySettings(changes[SETTINGS_KEY].newValue);
+      return;
+    }
+
+    if (changes[LEGACY_ENABLED_KEY]) {
+      applySettings({
+        ...settings,
+        enabled: Boolean(changes[LEGACY_ENABLED_KEY].newValue)
+      });
+    }
+  });
+
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message?.type !== "applyHebrewRtlSettings") return false;
+
+    applySettings(settings);
+    sendResponse({ ok: true });
+    return false;
   });
 })();
+
+

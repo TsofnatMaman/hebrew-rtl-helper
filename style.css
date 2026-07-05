@@ -1,38 +1,45 @@
-[data-hebrew-rtl-fixed="true"] {
+﻿html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-direction="true"] [data-hebrew-rtl-fixed="true"] {
   direction: rtl !important;
   text-align: right !important;
   unicode-bidi: isolate;
+}
+
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] {
   line-height: 1.75 !important;
   overflow-wrap: break-word;
 }
 
-[data-hebrew-rtl-fixed="true"] ul,
-[data-hebrew-rtl-fixed="true"] ol {
-  padding-right: 1.5em !important;
-  padding-left: 0 !important;
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] ul,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] ol {
   margin-block: 0.5em 0.85em !important;
 }
 
-[data-hebrew-rtl-fixed="true"] p,
-[data-hebrew-rtl-fixed="true"] li,
-[data-hebrew-rtl-fixed="true"] blockquote {
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-direction="true"] [data-hebrew-rtl-fixed="true"] ul,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-direction="true"] [data-hebrew-rtl-fixed="true"] ol {
+  padding-right: 1.5em !important;
+  padding-left: 0 !important;
+}
+
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] p,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] li,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] blockquote {
   line-height: 1.75 !important;
 }
 
-[data-hebrew-rtl-fixed="true"] li {
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] li {
   margin-block: 0.35em !important;
 }
 
-[data-hebrew-rtl-fixed="true"] pre,
-[data-hebrew-rtl-fixed="true"] pre code {
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] pre,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] pre code {
   direction: ltr !important;
   text-align: left !important;
   unicode-bidi: isolate !important;
 }
 
-[data-hebrew-rtl-fixed="true"] code:not(pre code),
-[data-hebrew-rtl-fixed="true"] kbd:not(pre kbd),
-[data-hebrew-rtl-fixed="true"] samp:not(pre samp) {
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] code:not(pre code),
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] kbd:not(pre kbd),
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] samp:not(pre samp) {
   direction: ltr !important;
   display: inline;
   unicode-bidi: isolate-override !important;
@@ -59,9 +66,10 @@ nav [data-hebrew-rtl-fixed="true"],
   unicode-bidi: normal !important;
 }
 
-/* Improve Hebrew typography on fixed content without touching code blocks. */
-[data-hebrew-rtl-fixed="true"],
-[data-hebrew-rtl-fixed="true"] *:not(pre):not(code):not(kbd):not(samp) {
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-font="true"] [data-hebrew-rtl-fixed="true"],
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-font="true"] [data-hebrew-rtl-fixed="true"] *:not(pre):not(code):not(kbd):not(samp),
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-font="true"] textarea,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-font="true"] [contenteditable="true"] {
   font-family:
     "Rubik",
     "Heebo",
@@ -73,16 +81,4 @@ nav [data-hebrew-rtl-fixed="true"],
 
   font-weight: 400 !important;
   letter-spacing: normal !important;
-}
-
-html[data-hebrew-rtl-helper-enabled="true"] textarea,
-html[data-hebrew-rtl-helper-enabled="true"] [contenteditable="true"] {
-  font-family:
-    "Rubik",
-    "Heebo",
-    Arial,
-    "Noto Sans Hebrew",
-    "Segoe UI",
-    system-ui,
-    sans-serif !important;
 }

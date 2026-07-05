@@ -1,0 +1,71 @@
+﻿<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hebrew RTL Helper</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup">
+      <header class="brand">
+        <img class="brand-mark" src="icons/icon.png" alt="">
+        <div class="brand-copy">
+          <h1>Hebrew RTL Helper</h1>
+          <p>עברית קריאה בכל אתר</p>
+        </div>
+      </header>
+
+      <section class="controls" aria-label="הגדרות">
+        <label class="toggle primary">
+          <span class="toggle-copy">
+            <span class="title">פעיל</span>
+            <span class="hint">הפעלה כללית של התוסף</span>
+          </span>
+          <input id="enabled" type="checkbox">
+        </label>
+
+        <label class="toggle">
+          <span class="toggle-copy">
+            <span class="title">כיוון RTL</span>
+            <span class="hint">יישור וכיוון עברית</span>
+          </span>
+          <input id="direction" type="checkbox">
+        </label>
+
+        <label class="toggle">
+          <span class="toggle-copy">
+            <span class="title">Markdown וקוד</span>
+            <span class="hint">תיקון inline code באנגלית</span>
+          </span>
+          <input id="markdown" type="checkbox">
+        </label>
+
+        <label class="toggle">
+          <span class="toggle-copy">
+            <span class="title">גופן עברי</span>
+            <span class="hint">Rubik, Heebo ו-fallback נקי</span>
+          </span>
+          <input id="font" type="checkbox">
+        </label>
+
+        <label class="toggle">
+          <span class="toggle-copy">
+            <span class="title">ריווח וקריאות</span>
+            <span class="hint">שורות ורשימות מרווחות יותר</span>
+          </span>
+          <input id="spacing" type="checkbox">
+        </label>
+      </section>
+
+      <footer class="footer">
+        <button id="apply" class="apply" type="button">החל בדף הזה</button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </footer>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
+
+
