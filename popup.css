@@ -16,7 +16,7 @@ body {
 
 .popup {
   background:
-    linear-gradient(135deg, rgba(255, 122, 24, 0.12), transparent 34%),
+    linear-gradient(135deg, rgba(227, 63, 130, 0.14), transparent 34%),
     #101418;
   padding: 14px;
 }
@@ -71,7 +71,7 @@ h1 {
 }
 
 .toggle.primary {
-  border-color: rgba(255, 122, 24, 0.55);
+  border-color: rgba(227, 63, 130, 0.58);
 }
 
 .toggle:hover {
@@ -124,12 +124,12 @@ input[type="checkbox"]::before {
 }
 
 input[type="checkbox"]:checked {
-  background: #ff7a18;
-  border-color: #ff9d4f;
+  background: #e33f82;
+  border-color: #f06aa0;
 }
 
 input[type="checkbox"]:checked::before {
-  background: #1b1007;
+  background: #190813;
   transform: translateX(-18px);
 }
 
@@ -140,10 +140,10 @@ input[type="checkbox"]:checked::before {
 }
 
 .apply {
-  background: #ff7a18;
+  background: #e33f82;
   border: 0;
   border-radius: 8px;
-  color: #1b1007;
+  color: #190813;
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -152,7 +152,7 @@ input[type="checkbox"]:checked::before {
 }
 
 .apply:hover {
-  background: #ff8a34;
+  background: #ee5b99;
 }
 
 .apply:active {
@@ -166,3 +166,4 @@ input[type="checkbox"]:checked::before {
   margin: 8px 0 0;
   text-align: center;
 }
+
