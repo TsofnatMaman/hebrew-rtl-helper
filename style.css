@@ -20,6 +20,32 @@ html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-direction="tr
   padding-left: 0 !important;
 }
 
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] ul,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] ol,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] li {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] ul,
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] ol {
+  list-style-position: inside !important;
+  padding-inline-start: 0 !important;
+  padding-inline-end: 0 !important;
+}
+
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] li::marker {
+  unicode-bidi: isolate !important;
+}
+
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] li > p:first-child {
+  display: inline;
+}
+
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-markdown="true"] [data-hebrew-rtl-fixed="true"] li > p:first-child + * {
+  margin-block-start: 0.35em !important;
+}
+
 html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] p,
 html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] li,
 html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-spacing="true"] [data-hebrew-rtl-fixed="true"] blockquote {
