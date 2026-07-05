@@ -1,4 +1,4 @@
-﻿html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-direction="true"] [data-hebrew-rtl-fixed="true"] {
+html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-direction="true"] [data-hebrew-rtl-fixed="true"] {
   direction: rtl !important;
   text-align: right !important;
   unicode-bidi: isolate;
@@ -71,12 +71,12 @@ html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-font="true"] 
 html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-font="true"] textarea,
 html[data-hebrew-rtl-helper-enabled="true"][data-hebrew-rtl-helper-font="true"] [contenteditable="true"] {
   font-family:
-    "Rubik",
-    "Heebo",
-    Arial,
-    "Noto Sans Hebrew",
+    -apple-system,
+    BlinkMacSystemFont,
     "Segoe UI",
-    system-ui,
+    "Noto Sans Hebrew",
+    "Noto Sans",
+    Arial,
     sans-serif !important;
 
   font-weight: 400 !important;

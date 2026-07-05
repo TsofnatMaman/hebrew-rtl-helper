@@ -1,6 +1,6 @@
-﻿:root {
+:root {
   color-scheme: dark;
-  font-family: "Rubik", "Heebo", Arial, "Noto Sans Hebrew", "Segoe UI", system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Hebrew", "Noto Sans", Arial, sans-serif;
 }
 
 * {
@@ -184,4 +184,3 @@ input[type="checkbox"]:checked::before {
   color: #ff82b2;
   text-decoration: underline;
 }
-

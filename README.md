@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="icons/icon.png" alt="Hebrew RTL Helper" width="160">
 </p>
 
@@ -16,7 +16,7 @@ The extension detects Hebrew text in common content elements, applies RTL direct
 - Applies RTL direction only to relevant text containers.
 - Preserves existing `dir` and `lang` attributes.
 - Avoids inputs, editable fields, navigation, sidebars, scripts, styles, SVG, and code blocks.
-- Improves Hebrew font fallback with Rubik, Heebo, Arial, Noto Sans Hebrew, Segoe UI, and system fonts.
+- Improves Hebrew font fallback with Segoe UI, Noto Sans Hebrew, Noto Sans, Arial, and system fonts.
 - Improves mixed Hebrew-English/code readability with inline-code bidi isolation.
 - Opens a branded settings popup from the extension icon.
 - Saves user choices with `chrome.storage`.
@@ -44,4 +44,3 @@ Tip: after translating a page with Google Translate, click **Apply to this page*
 ## Testing
 
 This extension is generic and can run on any web page. Dynamic pages with streamed or frequently updated Hebrew content are useful for validating RTL behavior.
-
