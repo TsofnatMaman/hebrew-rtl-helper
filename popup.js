@@ -1,8 +1,9 @@
-﻿const SETTINGS_KEY = "hebrewRtlHelperSettings";
+const SETTINGS_KEY = "hebrewRtlHelperSettings";
+const SITE_SETTINGS_KEY = "hebrewRtlHelperSites";
 const LEGACY_ENABLED_KEY = "hebrewRtlHelperEnabled";
 
 const DEFAULT_SETTINGS = {
-  enabled: true,
+  enabled: false,
   direction: true,
   markdown: true,
   font: true,
@@ -20,11 +21,32 @@ const controls = {
 const applyButton = document.getElementById("apply");
 const statusElement = document.getElementById("status");
 
-function normalizeSettings(settings = {}) {
+let activeTabId = null;
+let activeSiteKey = null;
+
+function normalizeStoredSettings(settings = {}, enabled = false) {
+  const { enabled: _ignoredEnabled, ...featureSettings } = settings || {};
+
   return {
     ...DEFAULT_SETTINGS,
-    ...settings
+    ...featureSettings,
+    enabled: Boolean(enabled)
   };
+}
+
+function getSiteKeyFromUrl(url) {
+  try {
+    const parsedUrl = new URL(url);
+
+    if (parsedUrl.protocol === "file:") return "file://";
+    if (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") {
+      return parsedUrl.hostname === "localhost" ? parsedUrl.host : parsedUrl.hostname;
+    }
+  } catch (_error) {
+    return null;
+  }
+
+  return null;
 }
 
 function readControls() {
@@ -36,11 +58,17 @@ function readControls() {
 }
 
 function writeControls(settings) {
-  const normalizedSettings = normalizeSettings(settings);
-
   for (const [key, input] of Object.entries(controls)) {
-    input.checked = Boolean(normalizedSettings[key]);
+    input.checked = Boolean(settings[key]);
   }
+}
+
+function setControlsDisabled(disabled) {
+  for (const input of Object.values(controls)) {
+    input.disabled = disabled;
+  }
+
+  applyButton.disabled = disabled;
 }
 
 function setStatus(text) {
@@ -55,34 +83,95 @@ function setStatus(text) {
   }, 1600);
 }
 
-function saveSettings() {
-  chrome.storage.local.set({
-    [SETTINGS_KEY]: readControls()
+function updateActionState(enabled) {
+  if (!activeTabId) return;
+
+  chrome.action.setBadgeText({ tabId: activeTabId, text: enabled ? "" : "OFF" });
+  chrome.action.setTitle({
+    tabId: activeTabId,
+    title: enabled
+      ? "Hebrew RTL Helper is on for this site"
+      : "Open Hebrew RTL Helper to use it here"
   });
-  chrome.storage.local.remove(LEGACY_ENABLED_KEY);
+
+  if (!enabled) {
+    chrome.action.setBadgeBackgroundColor({ tabId: activeTabId, color: "#666666" });
+  }
+}
+
+function saveSettings() {
+  if (!activeSiteKey) {
+    setStatus("לא זמין בדף הזה");
+    return;
+  }
+
+  const { enabled, ...featureSettings } = readControls();
+
+  chrome.storage.local.get([SITE_SETTINGS_KEY], (result) => {
+    const siteSettings = { ...(result[SITE_SETTINGS_KEY] || {}) };
+
+    if (enabled) {
+      siteSettings[activeSiteKey] = true;
+    } else {
+      delete siteSettings[activeSiteKey];
+    }
+
+    chrome.storage.local.set(
+      {
+        [SETTINGS_KEY]: featureSettings,
+        [SITE_SETTINGS_KEY]: siteSettings
+      },
+      () => {
+        chrome.storage.local.remove(LEGACY_ENABLED_KEY);
+        updateActionState(enabled);
+      }
+    );
+  });
 }
 
 function loadSettings() {
-  chrome.storage.local.get([SETTINGS_KEY], (result) => {
-    writeControls(result[SETTINGS_KEY] || DEFAULT_SETTINGS);
+  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+    activeTabId = tab?.id || null;
+    activeSiteKey = getSiteKeyFromUrl(tab?.url || "");
+
+    if (!activeSiteKey) {
+      writeControls(DEFAULT_SETTINGS);
+      setControlsDisabled(true);
+      updateActionState(false);
+      setStatus("לא זמין בדף הזה");
+      return;
+    }
+
+    chrome.storage.local.get([SETTINGS_KEY, SITE_SETTINGS_KEY], (result) => {
+      const siteSettings = result[SITE_SETTINGS_KEY] || {};
+      const enabled = Boolean(siteSettings[activeSiteKey]);
+      const settings = normalizeStoredSettings(result[SETTINGS_KEY], enabled);
+
+      setControlsDisabled(false);
+      writeControls(settings);
+      updateActionState(enabled);
+    });
   });
 }
 
 function applyToActiveTab() {
-  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-    if (!tab?.id) {
-      setStatus("לא נמצא טאב פעיל");
+  if (!activeTabId) {
+    setStatus("לא נמצא טאב פעיל");
+    return;
+  }
+
+  if (!controls.enabled.checked) {
+    setStatus("התוסף כבוי באתר הזה");
+    return;
+  }
+
+  chrome.tabs.sendMessage(activeTabId, { type: "applyHebrewRtlSettings" }, () => {
+    if (chrome.runtime.lastError) {
+      setStatus("צריך לרענן את הדף");
       return;
     }
 
-    chrome.tabs.sendMessage(tab.id, { type: "applyHebrewRtlSettings" }, () => {
-      if (chrome.runtime.lastError) {
-        setStatus("צריך לרענן את הדף");
-        return;
-      }
-
-      setStatus("הוחל בדף הזה");
-    });
+    setStatus("הוחל בדף הזה");
   });
 }
 
@@ -93,4 +182,3 @@ for (const input of Object.values(controls)) {
 applyButton.addEventListener("click", applyToActiveTab);
 
 loadSettings();
-

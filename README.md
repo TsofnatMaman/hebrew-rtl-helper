@@ -6,7 +6,7 @@
 
 [עברית](README.he.md)
 
-A small Chrome extension that improves Hebrew right-to-left rendering on web pages.
+A small Chrome extension that improves Hebrew right-to-left rendering on web pages. It only runs on sites you choose.
 
 The extension detects Hebrew text in common content elements, applies RTL direction when enabled, and can improve Hebrew typography, spacing, and mixed Hebrew-English/code readability.
 
@@ -24,9 +24,9 @@ The extension detects Hebrew text in common content elements, applies RTL direct
 
 ## Settings
 
-All options are enabled by default:
+Text-fix options are ready by default. Choose the sites where you want the extension to run:
 
-- Enabled
+- Run on this site
 - RTL direction
 - Markdown/code alignment
 - Font override

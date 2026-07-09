@@ -1,11 +1,11 @@
-﻿(() => {
+(() => {
   const SETTINGS_KEY = "hebrewRtlHelperSettings";
-  const LEGACY_ENABLED_KEY = "hebrewRtlHelperEnabled";
+  const SITE_SETTINGS_KEY = "hebrewRtlHelperSites";
   const HEBREW_RE = /[\u0590-\u05FF]/;
   const LRM = "\u200e";
 
   const DEFAULT_SETTINGS = {
-    enabled: true,
+    enabled: false,
     direction: true,
     markdown: true,
     font: true,
@@ -53,11 +53,29 @@
 
   let settings = { ...DEFAULT_SETTINGS };
 
-  function normalizeSettings(nextSettings = {}) {
+  function normalizeStoredSettings(nextSettings = {}, enabled = false) {
+    const { enabled: _ignoredEnabled, ...featureSettings } = nextSettings || {};
+
+    return {
+      ...DEFAULT_SETTINGS,
+      ...featureSettings,
+      enabled: Boolean(enabled)
+    };
+  }
+
+  function normalizeRuntimeSettings(nextSettings = {}) {
     return {
       ...DEFAULT_SETTINGS,
       ...nextSettings
     };
+  }
+
+  function getSiteKey() {
+    if (window.location.protocol === "file:") return "file://";
+    if (window.location.hostname === "localhost") return window.location.host;
+    if (window.location.hostname) return window.location.hostname;
+
+    return null;
   }
 
   function hasEnabledFeature() {
@@ -326,7 +344,7 @@
   }
 
   function applySettings(nextSettings) {
-    settings = normalizeSettings(nextSettings);
+    settings = normalizeRuntimeSettings(nextSettings);
     applyRootSettings();
     pendingRoots.clear();
     restoreFixedElements();
@@ -337,13 +355,11 @@
   }
 
   function loadSettings() {
-    chrome.storage.local.get([SETTINGS_KEY, LEGACY_ENABLED_KEY], (result) => {
-      const storedSettings = result[SETTINGS_KEY];
-      const nextSettings = normalizeSettings(storedSettings);
-
-      if (storedSettings === undefined && result[LEGACY_ENABLED_KEY] !== undefined) {
-        nextSettings.enabled = Boolean(result[LEGACY_ENABLED_KEY]);
-      }
+    chrome.storage.local.get([SETTINGS_KEY, SITE_SETTINGS_KEY], (result) => {
+      const siteKey = getSiteKey();
+      const siteSettings = result[SITE_SETTINGS_KEY] || {};
+      const siteEnabled = Boolean(siteKey && siteSettings[siteKey]);
+      const nextSettings = normalizeStoredSettings(result[SETTINGS_KEY], siteEnabled);
 
       applySettings(nextSettings);
     });
@@ -376,27 +392,16 @@
 
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== "local") return;
+    if (!changes[SETTINGS_KEY] && !changes[SITE_SETTINGS_KEY]) return;
 
-    if (changes[SETTINGS_KEY]) {
-      applySettings(changes[SETTINGS_KEY].newValue);
-      return;
-    }
-
-    if (changes[LEGACY_ENABLED_KEY]) {
-      applySettings({
-        ...settings,
-        enabled: Boolean(changes[LEGACY_ENABLED_KEY].newValue)
-      });
-    }
+    loadSettings();
   });
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message?.type !== "applyHebrewRtlSettings") return false;
 
-    applySettings(settings);
+    loadSettings();
     sendResponse({ ok: true });
     return false;
   });
 })();
-
-

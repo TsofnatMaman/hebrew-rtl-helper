@@ -1,67 +1,46 @@
-﻿const SETTINGS_KEY = "hebrewRtlHelperSettings";
+const SETTINGS_KEY = "hebrewRtlHelperSettings";
+const SITE_SETTINGS_KEY = "hebrewRtlHelperSites";
 const LEGACY_ENABLED_KEY = "hebrewRtlHelperEnabled";
 
 const DEFAULT_SETTINGS = {
-  enabled: true,
   direction: true,
   markdown: true,
   font: true,
   spacing: true
 };
 
-function normalizeSettings(settings = {}) {
-  return {
-    ...DEFAULT_SETTINGS,
-    ...settings
-  };
-}
+function ensureDefaultSettings() {
+  chrome.storage.local.get([SETTINGS_KEY, SITE_SETTINGS_KEY], (result) => {
+    const updates = {};
 
-function getSettings(callback) {
-  chrome.storage.local.get([SETTINGS_KEY, LEGACY_ENABLED_KEY], (result) => {
-    const storedSettings = result[SETTINGS_KEY];
-    const settings = normalizeSettings(storedSettings);
-
-    if (storedSettings === undefined && result[LEGACY_ENABLED_KEY] !== undefined) {
-      settings.enabled = Boolean(result[LEGACY_ENABLED_KEY]);
+    if (!result[SETTINGS_KEY]) {
+      updates[SETTINGS_KEY] = DEFAULT_SETTINGS;
     }
 
-    callback(settings);
+    if (!result[SITE_SETTINGS_KEY]) {
+      updates[SITE_SETTINGS_KEY] = {};
+    }
+
+    if (Object.keys(updates).length > 0) {
+      chrome.storage.local.set(updates);
+    }
+
+    chrome.storage.local.remove(LEGACY_ENABLED_KEY);
   });
 }
 
-function updateActionState(settings) {
-  const enabled = normalizeSettings(settings).enabled;
-
-  chrome.action.setBadgeText({ text: enabled ? "" : "OFF" });
-  chrome.action.setTitle({
-    title: enabled ? "Hebrew RTL Helper is on" : "Hebrew RTL Helper is off"
-  });
-
-  if (!enabled) {
-    chrome.action.setBadgeBackgroundColor({ color: "#666666" });
-  }
-}
-
-function ensureDefaultSettings() {
-  getSettings((settings) => {
-    chrome.storage.local.set({
-      [SETTINGS_KEY]: settings
-    });
-    updateActionState(settings);
-  });
+function setDefaultActionState() {
+  chrome.action.setBadgeText({ text: "OFF" });
+  chrome.action.setBadgeBackgroundColor({ color: "#666666" });
+  chrome.action.setTitle({ title: "Open Hebrew RTL Helper to choose where it runs" });
 }
 
 chrome.runtime.onInstalled.addListener(() => {
   ensureDefaultSettings();
+  setDefaultActionState();
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  getSettings(updateActionState);
+  ensureDefaultSettings();
+  setDefaultActionState();
 });
-
-chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName !== "local" || !changes[SETTINGS_KEY]) return;
-
-  updateActionState(changes[SETTINGS_KEY].newValue);
-});
-
